@@ -13,13 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-add_subdirectory(processes)
+
 
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        processes/processes.cpp
+        processes/processes.h
+        helpers.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -45,7 +48,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(kektron PRIVATE Qt${QT_VERSION_MAJOR}::Widgets processes)
+target_link_libraries(kektron PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(kektron PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
