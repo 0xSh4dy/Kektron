@@ -38,14 +38,17 @@ std::vector<Process*>ProcessManager::EnumerateProcesses(){
     return processList;
 }
 
+void ProcessManager::SetupRenderer(){
+    this->processList = this->EnumerateProcesses();
+}
+
 void ProcessManager::RenderProcesses(QTableWidget* tableWidget){
-    std::vector<Process*>processList = this->EnumerateProcesses();
     QListWidgetItem* item;
 
     tableWidget->insertColumn(0);
     tableWidget->insertColumn(1);
     tableWidget->insertColumn(2);
-    for(auto process:processList){
+    for(auto process:this->processList){
         QTableWidgetItem* pNameItem = new QTableWidgetItem;
         QTableWidgetItem* pidItem = new QTableWidgetItem;
         QTableWidgetItem* statusItem = new QTableWidgetItem;
@@ -54,12 +57,7 @@ void ProcessManager::RenderProcesses(QTableWidget* tableWidget){
         pidItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
         pidItem->setText(QString::fromStdString(std::to_string(process->pid)));
         statusItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-        if(process->isAvailable){
-            statusItem->setText("Available");
-        }
-        else{
-            statusItem->setText("Not available");
-        }
+        this->UpdateAvailability(statusItem,process);
         tableWidget->insertRow(tableWidget->rowCount());
         tableWidget->setItem(tableWidget->rowCount()-1,0,pNameItem);
         tableWidget->setItem(tableWidget->rowCount()-1,1,pidItem);
@@ -70,4 +68,16 @@ void ProcessManager::RenderProcesses(QTableWidget* tableWidget){
     verticalHeader->setVisible(false);
     tableWidget->setVerticalHeader(verticalHeader);
     tableWidget->setHorizontalHeaderLabels({"Process","PID","Status"});
+
+}
+
+void ProcessManager::UpdateAvailability(QTableWidgetItem* statusItem,Process* process){
+    HANDLE hProcess;
+    hProcess = OpenProcess(PROCESS_ALL_ACCESS,true,process->pid);
+    if(hProcess!=NULL){
+        statusItem->setText("Available");
+    }
+    else{
+        statusItem->setText("Not available");
+    }
 }

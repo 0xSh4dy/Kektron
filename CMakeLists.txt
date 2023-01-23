@@ -22,6 +22,7 @@ set(PROJECT_SOURCES
         mainwindow.ui
         processes/processes.cpp
         processes/processes.h
+        processes/displayManager.cpp
         helpers.hpp
 )
 

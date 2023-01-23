@@ -18,5 +18,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::RenderProcesses(){
     std::unique_ptr<ProcessManager>pManager = std::make_unique<ProcessManager>();
+    pManager->SetupRenderer();
     pManager->RenderProcesses(ui->processTableWidget);
+
 }
